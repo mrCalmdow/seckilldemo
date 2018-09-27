@@ -32,9 +32,8 @@ public class SynchronizeController extends BaseController {
 	@GetMapping("/async")
 	public ResponseMO testNormalSynchronize1() {
 
-		if(!synchronizeService.updateIndexes1()){
-			return error("已经有人在同步了");
-		}
+		synchronizeService.updateIndexes1();
+
 		return success();
 	}
 }

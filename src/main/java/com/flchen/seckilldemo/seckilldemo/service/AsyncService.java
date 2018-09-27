@@ -22,4 +22,6 @@ public interface AsyncService {
 	 * 使用redis锁定异步方法的执行次数
 	 */
 	void redisLock();
+
+	void taskExecute();
 }

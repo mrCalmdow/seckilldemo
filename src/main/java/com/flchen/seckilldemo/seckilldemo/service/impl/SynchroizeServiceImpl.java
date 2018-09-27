@@ -40,22 +40,21 @@ public class SynchroizeServiceImpl implements SynchronizeService {
 		return true;
 	}
 
+	@Async
 	@Override
-	public boolean updateIndexes1() {
+	public void updateIndexes1() {
 		if(!lock.tryLock()) {
-			return false;
+			return;
 		}
 		try {
-			asyncService.doTask1();
 			log.error("updating~~~~~~~");
+			asyncService.taskExecute();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			lock.unlock();
 		}
 		log.error("update completed.~~~~~~~~~~~~~~~");
-		return true;
 	}
-
 
 }

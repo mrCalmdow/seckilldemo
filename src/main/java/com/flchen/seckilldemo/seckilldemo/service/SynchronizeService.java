@@ -8,5 +8,5 @@ public interface SynchronizeService {
 
 	boolean updateIndexes();
 
-	boolean updateIndexes1();
+	void updateIndexes1();
 }

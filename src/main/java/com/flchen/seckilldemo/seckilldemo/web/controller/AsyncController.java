@@ -24,6 +24,12 @@ public class AsyncController extends BaseController {
 
 	@GetMapping
 	public ResponseMO test() throws InterruptedException {
+		asyncService.doTask();
+		return success();
+	}
+
+	@GetMapping("/lock")
+	public ResponseMO test1() throws InterruptedException {
 		asyncService.doTask1();
 		return success();
 	}

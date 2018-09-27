@@ -24,7 +24,8 @@ public class AsyncServiceImpl implements AsyncService {
 		if(!lock.tryLock()) {
 			return ;
 		}
-		Thread.sleep(16000);
+//		Thread.sleep(16000);
+		taskExecute();
 		log.info("Async task executed.");
 		lock.unlock();
 	}
@@ -39,6 +40,14 @@ public class AsyncServiceImpl implements AsyncService {
 	@Override
 	public void redisLock() {
 
+	}
+
+	public void taskExecute() {
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
