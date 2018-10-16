@@ -1,6 +1,7 @@
 package com.flchen.seckilldemo.seckilldemo.service;
 
 import com.flchen.seckilldemo.seckilldemo.entity.ProductDO;
+import com.flchen.seckilldemo.seckilldemo.entity.mo.OrderMessageMO;
 
 /**
  * @author feilongchen
@@ -13,4 +14,6 @@ public interface OrderService {
 	boolean redisOrdering(ProductDO product, String userId);
 
 	void initStock();
+
+	void insertOrderRecord(OrderMessageMO orderMessage);
 }

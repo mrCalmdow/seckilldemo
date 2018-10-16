@@ -7,6 +7,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 利用redis（单机）实现分布式服务的，多线程排他锁
  * @author feilongchen

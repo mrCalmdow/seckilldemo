@@ -29,6 +29,14 @@ public abstract class BaseController {
 		responseMO.setCode(CommomConstants.RESPONSE_CODE_SUCCESS);
 		return responseMO;
 	}
+
+	protected <T> ResponseMO success(T data) {
+		ResponseMO responseMO = new ResponseMO();
+		responseMO.setMessage("");
+		responseMO.setCode(CommomConstants.RESPONSE_CODE_SUCCESS);
+		responseMO.setData(data);
+		return responseMO;
+	}
 	protected <T> ResponseMO success(String message, T data) {
 		ResponseMO responseMO = new ResponseMO();
 		responseMO.setMessage(message);

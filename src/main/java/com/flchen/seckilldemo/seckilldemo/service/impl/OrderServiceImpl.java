@@ -3,13 +3,18 @@ package com.flchen.seckilldemo.seckilldemo.service.impl;
 import com.flchen.seckilldemo.seckilldemo.commom.CommomConstants;
 import com.flchen.seckilldemo.seckilldemo.entity.OrderDO;
 import com.flchen.seckilldemo.seckilldemo.entity.ProductDO;
+import com.flchen.seckilldemo.seckilldemo.entity.mo.OrderMessageMO;
+import com.flchen.seckilldemo.seckilldemo.repository.OrderAutoRepository;
 import com.flchen.seckilldemo.seckilldemo.repository.ProductAutoRepository;
+import com.flchen.seckilldemo.seckilldemo.repository.UserAutoRepository;
 import com.flchen.seckilldemo.seckilldemo.service.OrderService;
+import com.flchen.seckilldemo.seckilldemo.service.rabbit.OrderRabbitSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +35,16 @@ public class OrderServiceImpl implements OrderService {
 	private ProductAutoRepository productAutoRepository;
 
 	@Autowired
+	private UserAutoRepository userAutoRepository;
+
+	@Autowired
+	private OrderAutoRepository orderAutoRepository;
+
+	@Autowired
 	private RedisTemplate<String, OrderDO> redisTemplate4Order;
+
+	@Autowired
+	private OrderRabbitSender orderRabbitSender;
 
 	@Override
 	public boolean normalOrdering(ProductDO product) {
@@ -62,6 +76,11 @@ public class OrderServiceImpl implements OrderService {
 			stringRedisTemplate.boundSetOps(product.getProductName() + CommomConstants.REDIS_BOUGHT_CACHE_SUFFIX).remove(userId);
 		}
 		// TODO generate order record
+		OrderMessageMO orderMessageMO = new OrderMessageMO();
+		orderMessageMO.setNumber(1);
+		orderMessageMO.setProductId(product.getId());
+		orderMessageMO.setUserId(userId);
+		orderRabbitSender.sendOrderMessage(orderMessageMO);
 		return true;
 	}
 
@@ -74,5 +93,15 @@ public class OrderServiceImpl implements OrderService {
 				stringRedisTemplate.boundValueOps(productDO.getProductName() + "_stock").set(productDO.getStock().toString());
 			});
 		}
+	}
+
+	@Override
+	public void insertOrderRecord(OrderMessageMO orderMessage) {
+		Assert.notNull(orderMessage, "订单信息不能为空");
+		OrderDO order = new OrderDO();
+		order.setProduct(productAutoRepository.findById(orderMessage.getProductId()).get());
+		order.setUser(userAutoRepository.findById(orderMessage.getUserId()).get());
+		order.setState(1);
+		orderAutoRepository.save(order);
 	}
 }

@@ -12,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface UserAutoRepository extends MongoRepository<UserDO, String> {
 
 	UserDO findByPhone(String phone);
+
+	UserDO findByUsername(String username);
 }
